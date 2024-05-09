@@ -1,13 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .forms import SignUpForm, LoginUpForm
+from .forms import SignUpForm, LoginUpForm, PostForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login, logout
+from .models import Post
 
 
 # Home Page
 def home(request):
-    
-    return render(request, 'blog/home.html' , )
+    posts = Post.objects.all()
+    return render(request, 'blog/home.html' , {'posts':posts})
 
 
 # About Page
@@ -24,8 +25,11 @@ def contact(request):
 
 # Dashboard
 def dashboard(request):
-    
-    return render(request, 'blog/dashboard.html' , )
+    if request.user.is_authenticated:
+        posts = Post.objects.all()
+        return render(request, 'blog/dashboard.html' , {'posts':posts} )
+    else:
+        return HttpResponseRedirect('/login/')
 
 
 # logout
@@ -74,3 +78,52 @@ def user_login(request):
     else:
         return HttpResponseRedirect('/dashboard/')
 
+
+# Add New Post
+
+def add_post(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = PostForm(request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                desc = form.cleaned_data['desc']
+                pst = Post(title=title,  desc=desc)
+                pst.save()
+                # form = PostForm()
+                return HttpResponseRedirect('/dashboard/')
+        else:
+            form = PostForm()
+        
+        return render(request, "blog/addpost.html", {'form':form})
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+# Add Update Post
+
+def update_post(request,id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pi = Post.objects.get(pk=id)
+            form = PostForm(request.POST, instance=pi)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/dashboard/')
+        else:
+            pi = Post.objects.get(pk=id)
+            form = PostForm(instance=pi)
+        
+        return render(request, "blog/updatepost.html", {'form':form})
+    else:
+        return HttpResponseRedirect('/login/')
+# Add Update Post
+
+def delete_post(request,id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pi = Post.objects.get(pk=id)
+            pi.delete()
+        return HttpResponseRedirect('/dashboard/')
+    else:
+        return HttpResponseRedirect("/login/")
