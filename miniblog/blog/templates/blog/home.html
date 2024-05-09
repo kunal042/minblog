@@ -6,46 +6,18 @@
   <h3 class="text-white my-5">Home page</h3>
   {% for post in posts %}
   <div class="list-group my-2">
-    <a
-      href="#"
-      class="list-group-item list-group-item-action active"
-      aria-current="true"
-    >
+    
+    <a href="#" class="list-group-item list-group-item-action my-2">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1 fw-bold">{{post.title}}</h5>
-        <small>3 days ago</small>
-      </div>
-      <p class="mb-1">{{post.desc}}</p>
-      <small>by Rohit bhat</small>
-    </a>
-    <a href="#" class="list-group-item list-group-item-action">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1 fw-bold">This is the second Blog</h5>
         <small class="text-body-secondary">3 days ago</small>
       </div>
       <p class="mb-1">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus,
-        earum et maiores at labore aliquid, pariatur tenetur nihil velit autem
-        atque? Est ipsa in magni accusamus amet, error ipsum quod.
+        {{post.desc}}
       </p>
-      <small class="text-body-secondary">by rahul_singh.</small>
+      <small class="text-body-secondary">~{{full_name}} {% for group in gps %} <sub>{{group.name}}</sub>{% endfor %} </small>
     </a>
-    <a href="#" class="list-group-item list-group-item-action">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1 fw-bold">This is the Third Blog</h5>
-        <small class="text-body-secondary">3 days ago</small>
-      </div>
-      <p class="mb-1">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae
-        dignissimos voluptatibus, eum doloremque laboriosam voluptates hic iusto
-        sapiente tenetur maxime beatae unde voluptatum voluptatem natus ex
-        cumque suscipit fugit laborum sunt. Eius ratione voluptas sit pariatur
-        reiciendis. Saepe exercitationem nostrum veniam! Maxime assumenda hic
-        corporis labore tenetur, amet culpa rerum impedit officia, nesciunt
-        earum necessitatibus ipsum itaque iusto, omnis nostrum.
-      </p>
-      <small class="text-body-secondary">by raj</small>
-    </a>
+    
   </div>
   {% endfor %}
 </div>

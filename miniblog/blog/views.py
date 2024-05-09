@@ -2,13 +2,17 @@ from django.shortcuts import render, HttpResponseRedirect
 from .forms import SignUpForm, LoginUpForm, PostForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth.models import Group
 from .models import Post
 
 
 # Home Page
 def home(request):
     posts = Post.objects.all()
-    return render(request, 'blog/home.html' , {'posts':posts})
+    user = request.user
+    full_name = user.get_username()
+    gps = user.groups.all()
+    return render(request, 'blog/home.html' , {'posts':posts, "full_name":full_name, 'gps':gps})
 
 
 # About Page
@@ -27,7 +31,10 @@ def contact(request):
 def dashboard(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
-        return render(request, 'blog/dashboard.html' , {'posts':posts} )
+        user = request.user
+        full_name = user.get_full_name()
+        gps = user.groups.all()
+        return render(request, 'blog/dashboard.html' , {'posts':posts, 'full_name':full_name, 'gps':gps} )
     else:
         return HttpResponseRedirect('/login/')
 
@@ -44,16 +51,14 @@ def user_signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            un = form.cleaned_data['username']
-            fn = form.cleaned_data['first_name']
-            ln = form.cleaned_data['last_name']
-            em = form.cleaned_data['email']
             
-
             messages.success(request, "Congartulations!! Yor become an Author.")
             
-            form.save()
-        form = SignUpForm()
+            user = form.save()
+            group = Group.objects.get(name='Author')
+            user.groups.add(group)
+
+        
     else:
         form = SignUpForm()
     
